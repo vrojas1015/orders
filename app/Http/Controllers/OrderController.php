@@ -35,11 +35,74 @@ class OrderController extends AppBaseController
     }
 
 
-    public function store(CreateOrderRequest $request)
+    public function store(Request $request)
     {
-        $input = $request->all();
 
-        $order = $this->orderRepository->create($input);
+        if($request['regular_frame'] == "on"){
+            $request['regular_frame'] = true;
+
+        }else{
+            $request['regular_frame'] = false;
+        }
+
+        $rules = $request->validate([
+            'user_id' => 'required',
+            'invoice' => 'required|integer',
+            'order_date' => 'required',
+            'installed_date' => 'required',
+            'status' => 'required|string',
+            'dealer' => 'required|string|max:255',
+            'dealer_country' => 'required|string|max:255',
+            'dealer_phone' => 'required|integer',
+            'buyer_name' => 'required|string|max:255',
+            'buyer_address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'zip' => 'required|integer',
+            'phone_day' => 'required|integer',
+            'phone_evening' => 'required|integer',
+            'phone_cell' => 'required|integer',
+            'installation_site' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'width' => 'required|numeric',
+            'roof_length' => 'required|numeric',
+            'frame_length' => 'required|numeric',
+            'leg_height' => 'required|numeric',
+            'gauge' => 'required|integer',
+            'price' => 'required|numeric',
+            'regular_frame' => 'required|boolean',
+            'a_frame' => 'required|boolean',
+            'vertical_roof' => 'required|boolean',
+            'all_vertical' => 'required|boolean',
+            'color_roof' => 'required|string|max:255',
+            'color_ends' => 'required|string|max:255',
+            'color_sides' => 'required|string|max:255',
+            'color_trim' => 'required|string|max:255',
+            'installation' => 'required|string',
+            'installation_other' => 'required|string|max:255',
+            'land_level' => 'required|boolean',
+            'electricity' => 'required|boolean',
+            'payment' => 'required|string',
+            'total_sale' => 'required|numeric',
+            'tax' => 'required|numeric',
+            'tax_exempt' => 'required|numeric',
+            'non_tax_contractor_fee' => 'required|numeric',
+            'total' => 'required|numeric',
+            'dealer_deposit' => 'required|numeric',
+            'amount_paid' => 'required|numeric',
+            'balance_due' => 'required|numeric',
+            'buyer_signature' => 'required|string|max:255',
+            'buyer_signature_date' => 'required',
+            'contractor_signature' => 'required|string|max:255',
+            'contractor_signature_date' => 'required',
+            'created_at' => 'nullable',
+            'updated_at' => 'nullable',
+            'deleted_at' => 'nullable'
+        ]);
+
+
+        //$order = $this->orderRepository->create($input);
 
         Flash::success('Order saved successfully.');
 
