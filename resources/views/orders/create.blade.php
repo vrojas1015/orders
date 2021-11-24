@@ -14,7 +14,7 @@
                 <li class="breadcrumb-item active"><a href="javascript:void(0)">Create Order</a></li>
             </ol>
         </div>
-        {!! Form::open(['route' => 'orders.store']) !!}
+        {!! Form::open(['id' => 'form_order']) !!}
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -49,7 +49,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Invoice</span>
                                     </div>
-                                    {!! Form::number('invoice', null, ['class' => 'form-control']) !!}
+                                    {!! Form::number('invoice', old('invoice'), ['class' => 'form-control']) !!}
                                 </div>
                                 <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend">
@@ -73,26 +73,32 @@
                                 <div class="form-group">
                                     <div class="form-check form-check-inline">
                                         <label class="form-check-label" for="status_quote">
-                                            <input type="radio" class="form-check-input" name="status" id="status_quote" value="1">
+                                            <input type="radio" class="form-check-input" name="status" id="status_quote" value="Quote">
                                             Quote
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <label class="form-check-label" for="status_shop">
-                                            <input type="radio" class="form-check-input" name="status" id="status_shop" value="2">
+                                            <input type="radio" class="form-check-input" name="status" id="status_shop" value="In Shop">
                                             In Shop
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <label class="form-check-label" for="status_installation">
-                                            <input type="radio" class="form-check-input" name="status" id="status_installation" value="3">
+                                            <input type="radio" class="form-check-input" name="status" id="status_installation" value="Installation">
                                             Installation
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <label class="form-check-label" for="status_installed">
-                                            <input type="radio" class="form-check-input" name="status" id="status_installed" value="4">
+                                            <input type="radio" class="form-check-input" name="status" id="status_installed" value="Installed">
                                             Installed
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label" for="status_cancel">
+                                            <input type="radio" class="form-check-input" name="status" id="status_installed" value="Cancel">
+                                            Cancel
                                         </label>
                                     </div>
                                 </div>
@@ -283,7 +289,7 @@
                                             <td>
                                                 <div class="form-check form-check-inline">
                                                     <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input" name="regular_frame" id="regular_frame">
+                                                        <input type="checkbox" class="form-check-input" name="regular_frame" id="regular_frame" value="false">
                                                         Regular Frame
                                                     </label>
                                                 </div>
@@ -502,27 +508,31 @@
                                                     <div class="form-group">
                                                         <div class="form-check form-check-inline">
                                                             <label for="check_ground" class="form-check-label" >
-                                                                <input type="radio" class="form-check-input" name="installation" id="installation" value="1"/>
+                                                                <input type="radio" class="form-check-input" name="installation" id="installation" value="Ground"/>
                                                                 Ground
                                                             </label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
                                                             <label for="check_cement" class="form-check-label" >
-                                                                <input type="radio" class="form-check-input" name="installation" id="installation" value="2"/>
+                                                                <input type="radio" class="form-check-input" name="installation" id="installation" value="Cement"/>
                                                                 Cement
                                                             </label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
                                                             <label for="check_asphalt" class="form-check-label" >
-                                                                <input type="radio" class="form-check-input" name="installation" id="installation" value="3"/>
+                                                                <input type="radio" class="form-check-input" name="installation" id="installation" value="Asphalt"/>
                                                                 Asphalt
                                                             </label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
-                                                            <label for="check_other" class="form-check-label" >
-                                                                <input type="radio" class="form-check-input" name="installation_other" id="installation_other" value="4"/>
-                                                                Other
-                                                            </label>
+
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <label for="check_other" class="form-check-label" >
+                                                                    <input type="radio" class="form-check-input" name="installation" id="installation" value="Other"/>
+                                                                    Other
+                                                                </label>
+                                                                {!! Form::text('installation_other', null, ['class' => 'form-control']) !!}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -634,7 +644,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
+                        {!! Form::button('Save', ['class' => 'btn btn-primary', 'id' => 'save']) !!}
                         <a href="{{ route('orders.index') }}" class="btn btn-default">Cancel</a>
                     </div>
                 </div>
@@ -674,7 +684,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger light" style="background-color: red important!" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
                     <button type="button" id="btn_create_item" class="btn btn-success light" onclick="addRow('table_item')">Create</button>
                     <button type="button" id="btn_edit_item" class="btn btn-success light" style="display:none">Editar</button>
                 </div>
@@ -682,40 +692,10 @@
         </div>
     </div>
 
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-12">
-                    <h1>Create Order</h1>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <div class="content px-3">
 
         @include('adminlte-templates::common.errors')
 
-        <div class="card">
-
-            {!! Form::open(['route' => 'orders.store']) !!}
-
-            <div class="card-body">
-
-                <div class="row">
-                    @include('orders.fields')
-                </div>
-
-            </div>
-
-            <div class="card-footer">
-                {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('orders.index') }}" class="btn btn-default">Cancel</a>
-            </div>
-
-            {!! Form::close() !!}
-
-        </div>
     </div>
 @endsection
 
@@ -729,7 +709,19 @@
 <script src="{{ asset('assets/js/plugins-init/pickadate-init.js') }}"></script>
 <script>
 
+    $("#save").on('click', null, function (event) {
+        //console.log($('#form_order').serialize());
+        console.log($('#form_order').serialize() + '&' + $.param(items));
 
+        $.ajax({
+            method: "POST",
+            url: "{{route('orders.store')}}",
+            data: $('#form_order').serialize() + '&items=' + JSON.stringify(items),
+            dataType: "json"
+        }).success(function( response ) {
+            console.log(response);
+        });
+    });
 //CLEAR MODAL
 $('#exampleModalCenter').on('show.bs.modal', function (event) {
     $("#exampleModalCenter input").val("");
