@@ -37,13 +37,46 @@ class OrderController extends AppBaseController
 
     public function store(Request $request)
     {
+        $items = json_decode($request->items);
 
-        if($request['regular_frame'] == "on"){
-            $request['regular_frame'] = true;
-
+        if(isset($request->regular_frame)){
+            if( $request->regular_frame === "on"){
+                $request->regular_frame = true;
+            }else{
+                //array_push($request, 'regular_frame');
+                $request->regular_frame = false;
+            }
         }else{
-            $request['regular_frame'] = false;
+            $request->request->regular_frame = false;
         }
+
+        if (isset($request->a_frame)) {
+            if($request->a_frame == "on"){
+                $request->a_frame = true;
+            }else{
+                $request->a_frame = false;
+            }
+        }else {
+            $request->a_frame = false;
+        }
+
+        if($request->vertical_roof == "on"){
+            $request->vertical_roof = true;
+        }else{
+            $request->vertical_roof = false;
+        }
+        if($request->all_vertical == "on"){
+            $request->all_vertical = true;
+        }else{
+            $request->all_vertical = false;
+        }
+        if($request->installation == "Other"){
+            $ruleInstallationOther = 'required|string|max:255';
+        }else{
+            $ruleInstallationOther = '';
+        }
+
+
 
         $rules = $request->validate([
             'user_id' => 'required',
@@ -71,18 +104,18 @@ class OrderController extends AppBaseController
             'leg_height' => 'required|numeric',
             'gauge' => 'required|integer',
             'price' => 'required|numeric',
-            'regular_frame' => 'required|boolean',
-            'a_frame' => 'required|boolean',
-            'vertical_roof' => 'required|boolean',
-            'all_vertical' => 'required|boolean',
+            'regular_frame' => 'required',
+            'a_frame' => 'required',
+            'vertical_roof' => 'required',
+            'all_vertical' => 'required',
             'color_roof' => 'required|string|max:255',
             'color_ends' => 'required|string|max:255',
             'color_sides' => 'required|string|max:255',
             'color_trim' => 'required|string|max:255',
             'installation' => 'required|string',
-            'installation_other' => 'required|string|max:255',
-            'land_level' => 'required|boolean',
-            'electricity' => 'required|boolean',
+            'installation_other' => $ruleInstallationOther,
+            'land_level' => 'required',
+            'electricity' => 'required',
             'payment' => 'required|string',
             'total_sale' => 'required|numeric',
             'tax' => 'required|numeric',
@@ -101,12 +134,15 @@ class OrderController extends AppBaseController
             'deleted_at' => 'nullable'
         ]);
 
-
-        //$order = $this->orderRepository->create($input);
+        //dd($request->all());
+        //$order = $this->orderRepository->create($request->all());
 
         Flash::success('Order saved successfully.');
-
-        return redirect(route('orders.index'));
+        return response()->json([
+            'name' => 'Abigail',
+            'state' => 'CA',
+        ]);
+        //return redirect(route('orders.index'));
     }
 
 
