@@ -23,7 +23,7 @@ class Item extends Model
     use HasFactory;
 
     public $table = 'items';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -35,6 +35,9 @@ class Item extends Model
     public $fillable = [
         'order_id',
         'item',
+        'description',
+        'amount',
+        'measure',
         'price'
     ];
 
@@ -47,6 +50,9 @@ class Item extends Model
         'id' => 'integer',
         'order_id' => 'integer',
         'item' => 'string',
+        'description' => 'string',
+        'amount' => 'integer',
+        'measure' => 'string',
         'price' => 'decimal:2'
     ];
 
@@ -58,6 +64,9 @@ class Item extends Model
     public static $rules = [
         'order_id' => 'required',
         'item' => 'required|string|max:255',
+        'description' => 'required|string|max:255',
+        'amount' => 'required|integer',
+        'measure' => 'required|sting',
         'price' => 'required|numeric',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',

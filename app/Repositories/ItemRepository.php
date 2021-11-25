@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Item;
 use App\Repositories\BaseRepository;
+use Illuminate\Container\Container as Application;
 
 /**
  * Class ItemRepository
@@ -19,6 +20,9 @@ class ItemRepository extends BaseRepository
     protected $fieldSearchable = [
         'order_id',
         'item',
+        'description',
+        'measure',
+        'amount',
         'price'
     ];
 
@@ -38,5 +42,10 @@ class ItemRepository extends BaseRepository
     public function model()
     {
         return Item::class;
+    }
+
+    public function detalle($id)
+    {
+        return Item::where('order_id', $id)->get();
     }
 }

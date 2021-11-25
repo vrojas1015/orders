@@ -2,7 +2,6 @@
     <table class="table" id="orders-table">
         <thead>
         <tr>
-            <th>User Id</th>
             <th>Invoice</th>
             <th>Order Date</th>
             <th>Status</th>
@@ -14,7 +13,6 @@
         <tbody>
         @foreach($orders as $order)
             <tr>
-                <td>{{ $order->user_id }}</td>
                 <td>{{ $order->invoice }}</td>
                 <td>{{ $order->order_date }}</td>
                 <td>{{ $order->status }}</td>

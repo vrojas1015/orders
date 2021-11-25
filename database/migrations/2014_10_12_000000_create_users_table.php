@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration
             $table->integer('invoice');
             $table->date('order_date');
             $table->date('installed_date');
-            $table->set('status',['Quote', 'In Shop', 'Installation', 'Installed']);
+            $table->set('status',['Quote', 'In Shop', 'Installation', 'Installed', 'Cancel']);
             $table->string('dealer');
             $table->string('dealer_country');
             $table->integer('dealer_phone');
@@ -46,23 +46,12 @@ class CreateUsersTable extends Migration
             $table->integer('phone_cell');
             $table->string('installation_site');
             $table->string('email');
-            $table->string('description');
-            $table->decimal('width');
-            $table->decimal('roof_length');
-            $table->decimal('frame_length');
-            $table->decimal('leg_height');
-            $table->integer('gauge');
-            $table->decimal('price');
-            $table->boolean('regular_frame');
-            $table->boolean('a_frame');
-            $table->boolean('vertical_roof');
-            $table->boolean('all_vertical');
             $table->string('color_roof');
             $table->string('color_ends');
             $table->string('color_sides');
             $table->string('color_trim');
             $table->set('installation',['Ground', 'Cement', 'Asphalt', 'Other']);
-            $table->string('installation_other');
+            $table->string('installation_other')->nullable();
             $table->boolean('land_level');
             $table->boolean('electricity');
             $table->set('payment',['Cash', 'Check', 'CC', 'P.O.']);
@@ -88,6 +77,9 @@ class CreateUsersTable extends Migration
                 ->constrained('orders')
                 ->onDelete('cascade');
             $table->string('item');
+            $table->string('description');
+            $table->set('measure',['Mile', 'Inch', 'foot', 'Unit', 'Pounds', 'Others']);
+            $table->decimal('amount');
             $table->decimal('price');
             $table->timestamps();
             $table->softDeletes();

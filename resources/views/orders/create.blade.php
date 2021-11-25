@@ -220,6 +220,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!--
                         <div class="row">
                             <div class="col-12">
                                 <table class="table table-bordered table-responsive-sm">
@@ -323,6 +324,8 @@
                                 </table>
                             </div>
                         </div>
+                        -->
+
                         <div class="row">
                             <div class="card-body">
                                 <button type="button" class="btn btn-square btn-success" data-toggle="modal" data-target="#exampleModalCenter">Create Item</button>
@@ -334,10 +337,11 @@
                                     <table class="table table-striped" >
                                         <thead>
                                         <tr>
-                                            <!--<th class="center">#</th> -->
                                             <th>Item</th>
                                             <th>Description</th>
-                                            <th class="right">Price</th>
+                                            <th>Price</th>
+                                            <th>Amount</th>
+                                            <th>Total</th>
                                         </tr>
                                         </thead>
                                         <tbody id="table_item">
@@ -677,9 +681,27 @@
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
+                                <span class="input-group-text"><strong>Amount:</strong></span>
+                            </div>
+                            {!! Form::number('amount', null, ['class' => 'form-control', 'id'=>'input_amount', 'required'=>'required']) !!}
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
                                 <span class="input-group-text"><strong>Price:</strong></span>
                             </div>
-                            {!! Form::number('input_price', null, ['class' => 'form-control', 'id' => 'input_price', 'required'=>'required']) !!}
+                            {!! Form::number('input_price', null, ['class' => 'form-control', 'id' => 'input_price', 'required'=>'required', 'onchange'=>'precioTotalItems()']) !!}
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><strong>Measure:</strong></span>
+                            </div>
+                            {!! Form::select('measure', ['Mile'=>'Mile', 'Unit'=>'Unit', 'foot'=>'foot', 'Inch'=>'Inch', 'Pounds'=>'Pounds', 'Others'=>'Others'], null, ['class' => 'form-control', 'id' => 'input_measure', 'required'=>'required']); !!}
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><strong>Total:</strong></span>
+                            </div>
+                            {!! Form::number('total_item', null, ['class' => 'form-control', 'id' => 'input_total_item', 'readonly'=>true]); !!}
                         </div>
                     </div>
                 </div>
@@ -708,18 +730,20 @@
 <!-- Pickdate -->
 <script src="{{ asset('assets/js/plugins-init/pickadate-init.js') }}"></script>
 <script>
-
+    let items = [];
+    let valorId = 1;
+    let totalSale = 0;
     $("#save").on('click', null, function (event) {
         //console.log($('#form_order').serialize());
         console.log($('#form_order').serialize() + '&' + $.param(items));
-
+        console.log("items:");
+        console.log(items);
         $.ajax({
             method: "POST",
             url: "{{route('orders.store')}}",
             data: $('#form_order').serialize() + '&items=' + JSON.stringify(items),
-            dataType: "json"
         }).success(function( response ) {
-            console.log(response);
+            window.location.href = "{{route('orders.index')}}";
         });
     });
 //CLEAR MODAL
@@ -729,15 +753,30 @@ $('#exampleModalCenter').on('show.bs.modal', function (event) {
     $("#btn_edit_item").hide();
 });
 
-//ADD ROW
-let items = [];
-let valorId = 1;
-let totalSale = 0;
+$(document).on('click', '.borrar', function (event) {
+        event.preventDefault();
+        let borra = $(this)[0].id;
+
+        for (const i in items) {
+            if(items[i]['id'] === Number.parseInt(borra) ){
+                totalSale = totalSale - Number.parseFloat(items[i]['price']);
+                items.splice(i, 1);
+            }
+
+        }
+        $("#total_sale").val(totalSale);
+
+        $(this).closest('tr').remove();
+
+    });
 
 function addRow(tableID) {
     let item = $("#input_item").val();
     let description = $("#input_description").val();
     let price = $("#input_price").val();
+    let amount = $("#input_amount").val();
+    let total = $("#input_total_item").val();
+    let measure = $("#input_measure").val();
     let tax = $("#tax").val();
 
     if (item === "" || description === "" || price <= 0 ){
@@ -751,7 +790,10 @@ function addRow(tableID) {
         "id": valorId,
         "item": item,
         "description": description,
-        "price": price
+        "amount": amount,
+        "price": price,
+        "measure": measure,
+        "total": total
     });
 
     // Obtiene una referencia a la tabla
@@ -763,11 +805,13 @@ function addRow(tableID) {
     var celdaUno  = newRow.insertCell(0);
     var celdaDos  = newRow.insertCell(1);
     var celdaTres  = newRow.insertCell(2);
-    var celdacuatro  = newRow.insertCell(3);
+    var celdaCuatro  = newRow.insertCell(3);
     var celdaCinco  = newRow.insertCell(4);
+
+    var celdaSeis  = newRow.insertCell(5);
+    var celdaSiete  = newRow.insertCell(6);
     // Añade un nodo de texto a la celda
 
-    //var textCeldaCero  = document.createTextNode(items.length);
 
     var textCeldaUno  = document.createElement("LABEL");
     textCeldaUno.innerText = items[items.length-1]['item'];
@@ -781,18 +825,26 @@ function addRow(tableID) {
     textCeldaTres.innerText = items[items.length-1]['price'];
     textCeldaTres.id="price_"+valorId;
 
-    var textCeldaCuatro  = document.createElement("BUTTON");
-    var textCeldaCinco = document.createElement("a");
+    var textCeldaCuatro  = document.createElement("LABEL");
+    textCeldaCuatro.innerText = items[items.length-1]['amount'];
+    textCeldaCuatro.id="amount_"+valorId;
 
-    textCeldaCuatro.className = "borrar btn btn-square btn-danger";
-    textCeldaCuatro.innerText = "Delete";
-    textCeldaCuatro.id=valorId;
+    var textCeldaCinco  = document.createElement("LABEL");
+    textCeldaCinco.innerText = items[items.length-1]['total'];
+    textCeldaCinco.id="total_"+valorId;
 
-    textCeldaCinco.className = "btn btn-square btn-primary";
-    textCeldaCinco.innerText = "Edit";
-    textCeldaCinco.id = "edit_"+valorId;
+    var textCeldaSeis  = document.createElement("BUTTON");
+    var textCeldaSiete = document.createElement("a");
 
-    textCeldaCinco.addEventListener('click', function(){
+    textCeldaSeis.className = "borrar btn btn-square btn-danger";
+    textCeldaSeis.innerText = "Delete";
+    textCeldaSeis.id=valorId;
+
+    textCeldaSiete.className = "btn btn-square btn-primary";
+    textCeldaSiete.innerText = "Edit";
+    textCeldaSiete.id = "edit_"+valorId;
+
+    textCeldaSiete.addEventListener('click', function(){
         $("#exampleModalCenter").modal("show");
         let editRow = $(this)[0].id;
         let arrayEdit = editRow.split("_");
@@ -805,6 +857,8 @@ function addRow(tableID) {
         $("#input_item").val(items.find(valores).item);
         $("#input_description").val(items.find(valores).description);
         $("#input_price").val(items.find(valores).price);
+        $("#input_amount").val(items.find(valores).amount);
+        $("#input_total_item").val(items.find(valores).total);
         $("#btn_create_item").hide();
         $("#btn_edit_item").show();
         let btnCreat = document.getElementById('btn_edit_item');
@@ -814,37 +868,21 @@ function addRow(tableID) {
 
     });
 
-    //celdaCero.appendChild(textCeldaCero);
     celdaUno.appendChild(textCeldaUno);
     celdaDos.appendChild(textCeldaDos);
     celdaTres.appendChild(textCeldaTres);
-    celdacuatro.appendChild(textCeldaCuatro);
+    celdaCuatro.appendChild(textCeldaCuatro);
     celdaCinco.appendChild(textCeldaCinco);
+    celdaSeis.appendChild(textCeldaSeis);
+    celdaSiete.appendChild(textCeldaSiete);
 
-    totalSale = totalSale + Number.parseFloat(items[items.length-1]['price']);
+    totalSale = totalSale + Number.parseFloat(items[items.length-1]['total']);
     //contractor_fee=totalSale +
 
     $("#total_sale").val(totalSale);
     $("#exampleModalCenter").modal('hide');
 
 }
-
-$(document).on('click', '.borrar', function (event) {
-    event.preventDefault();
-    let borra = $(this)[0].id;
-
-    for (const i in items) {
-        if(items[i]['id'] === Number.parseInt(borra) ){
-            totalSale = totalSale - Number.parseFloat(items[i]['price']);
-            items.splice(i, 1);
-        }
-
-    }
-    $("#total_sale").val(totalSale);
-
-    $(this).closest('tr').remove();
-
-});
 
 function editItem(id) {
     let elem = Number.parseInt(id);
@@ -854,13 +892,17 @@ function editItem(id) {
             items[i]['item'] = $("#input_item").val();
             items[i]['description'] = $("#input_description").val();
             items[i]['price'] = $("#input_price").val();
+            items[i]['total'] = $("#input_total_item").val();
 
             $("#item_"+elem).text(items[i]['item']);
             $("#description_"+elem).text(items[i]['description']);
             $("#price_"+elem).text(items[i]['price']);
+            $("#amount_"+elem).val(items[i]['amount']);
+            $("#total_"+elem).val(items[i]['total']);
 
         }
-        totalSale = totalSale + Number.parseFloat(items[i]['price']);
+        console.log(items[i]['total']);
+        totalSale = totalSale + Number.parseFloat(items[i]['total']);
     }
     $("#total_sale").val(totalSale);
     $("#exampleModalCenter").modal("hide");
@@ -868,11 +910,20 @@ function editItem(id) {
 
 function calculaTotal() {
     let tax = $("#tax").val();
-    let totalSale = $("#total_sale").val();
-    let porcentajeTax = Math.floor(totalSale*tax)/100;
+    let totalSale = Number.parseFloat($("#total_sale").val());
+    let porcentajeTax = (totalSale*tax)/100;
+    porcentajeTax = Number.parseFloat(porcentajeTax);
     let totalOrder = totalSale + porcentajeTax;
-    $("#total_order").val(porcentajeTax);
-    $("#total").val(totalOrder);
+    $("#total_order").val(totalOrder);
+    //$("#total").val(totalOrder);
+}
+
+function precioTotalItems() {
+    let amount = $("#input_amount").val();
+    let price = $("#input_price").val();
+    let sum = amount * price;
+
+    $("#input_total_item").val(sum);
 }
 // Llama a addRow() con el ID de la tabla
 </script>

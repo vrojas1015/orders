@@ -8,7 +8,7 @@
                     <h1>Order Details</h1>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-default float-right"
+                    <a class="btn btn-rounded btn-dark float-right"
                        href="{{ route('orders.index') }}">
                         Back
                     </a>

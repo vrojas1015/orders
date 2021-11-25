@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Repositories\OrderRepository;
+use App\Repositories\ItemRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
@@ -14,10 +15,12 @@ class OrderController extends AppBaseController
 {
     /** @var  OrderRepository */
     private $orderRepository;
+    private $itemRepository;
 
-    public function __construct(OrderRepository $orderRepo)
+    public function __construct(OrderRepository $orderRepo, ItemRepository  $itemRepository)
     {
         $this->orderRepository = $orderRepo;
+        $this->itemRepository = $itemRepository;
     }
 
     public function index(Request $request)
@@ -76,8 +79,6 @@ class OrderController extends AppBaseController
             $ruleInstallationOther = '';
         }
 
-
-
         $rules = $request->validate([
             'user_id' => 'required',
             'invoice' => 'required|integer',
@@ -97,17 +98,17 @@ class OrderController extends AppBaseController
             'phone_cell' => 'required|integer',
             'installation_site' => 'required|string|max:255',
             'email' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'width' => 'required|numeric',
-            'roof_length' => 'required|numeric',
-            'frame_length' => 'required|numeric',
-            'leg_height' => 'required|numeric',
-            'gauge' => 'required|integer',
-            'price' => 'required|numeric',
-            'regular_frame' => 'required',
-            'a_frame' => 'required',
-            'vertical_roof' => 'required',
-            'all_vertical' => 'required',
+            //'description' => 'required|string|max:255',
+            //'width' => 'required|numeric',
+            //'roof_length' => 'required|numeric',
+            //'frame_length' => 'required|numeric',
+            //'leg_height' => 'required|numeric',
+            //'gauge' => 'required|integer',
+            //'price' => 'required|numeric',
+            //'regular_frame' => 'required',
+            //'a_frame' => 'required',
+            //'vertical_roof' => 'required',
+            //'all_vertical' => 'required',
             'color_roof' => 'required|string|max:255',
             'color_ends' => 'required|string|max:255',
             'color_sides' => 'required|string|max:255',
@@ -134,13 +135,16 @@ class OrderController extends AppBaseController
             'deleted_at' => 'nullable'
         ]);
 
-        //dd($request->all());
-        //$order = $this->orderRepository->create($request->all());
+        $order = $this->orderRepository->create($request->all());
+        foreach ($items as $item) {
+            $arrayItem = ['order_id'=>2/*$order['id']*/, 'item'=>$item->item, 'description'=>$item->description, 'price'=>$item->price, 'amount'=>$item->amount, 'measure'=>$item->measure];
+            $row = $this->itemRepository->create($arrayItem);
+        }
 
         Flash::success('Order saved successfully.');
         return response()->json([
-            'name' => 'Abigail',
-            'state' => 'CA',
+            'msg' => 'Order saved successfully.',
+            'error' => false,
         ]);
         //return redirect(route('orders.index'));
     }
@@ -149,6 +153,7 @@ class OrderController extends AppBaseController
     public function show($id)
     {
         $order = $this->orderRepository->find($id);
+        $items = $this->itemRepository->detalle($order['id']);
 
         if (empty($order)) {
             Flash::error('Order not found');
@@ -156,7 +161,7 @@ class OrderController extends AppBaseController
             return redirect(route('orders.index'));
         }
 
-        return view('orders.show')->with('order', $order);
+        return view('orders.show')->with(['order'=>$order, 'items'=>$items]);
     }
 
 
