@@ -23,11 +23,11 @@
                     <div class='btn-group'>
                         <a href="{{ route('orders.show', [$order->id]) }}"
                            class='btn btn-default btn-xs'>
-                            <i class="far fa-eye"></i>
+                            <i class="flaticon-381-print"></i>
                         </a>
                         <a href="{{ route('orders.edit', [$order->id]) }}"
                            class='btn btn-default btn-xs'>
-                            <i class="far fa-edit"></i>
+                            <i class="flaticon-381-edit"></i>
                         </a>
                         {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
                     </div>

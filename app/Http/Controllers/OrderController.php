@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Repositories\OrderRepository;
 use App\Repositories\ItemRepository;
 use App\Http\Controllers\AppBaseController;
+use PDF;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Facade\FlareClient\Http\Response;
@@ -178,7 +180,6 @@ class OrderController extends AppBaseController
         return view('orders.edit')->with('order', $order);
     }
 
-
     public function update($id, UpdateOrderRequest $request)
     {
         $order = $this->orderRepository->find($id);
@@ -196,7 +197,6 @@ class OrderController extends AppBaseController
         return redirect(route('orders.index'));
     }
 
-
     public function destroy($id)
     {
         $order = $this->orderRepository->find($id);
@@ -212,5 +212,77 @@ class OrderController extends AppBaseController
         Flash::success('Order deleted successfully.');
 
         return redirect(route('orders.index'));
+    }
+
+    public function pdf($id){
+        $order = $this->orderRepository->find($id);
+        $items = $this->itemRepository->detalle($order['id']);
+
+        if (empty($order)) {
+            Flash::error('Order not found');
+
+            return redirect(route('orders.index'));
+        }
+        $array_list=[];
+        foreach ($items as $item) {
+            $array = [
+                'item' => $item->item,
+                'description' => $item->description,
+                'measure' => $item->measure,
+                'amount' => $item->amount,
+                'price' => $item->price
+            ];
+            $array_list[] = $array;
+        }
+
+
+        $data = [
+          'order' => [
+              "id" => $order->id,
+              "user_id" => $order->user_id,
+              "invoice" => $order->invoice,
+              "order_date" => $order->order_date->isoFormat('LL'),
+              "installed_date" => $order->installed_date->isoFormat('LL'),
+              "status" => $order->status,
+              "dealer" => $order->dealer,
+              "dealer_country" => $order->dealer_country,
+              "dealer_phone" => $order->dealer_phone,
+              "buyer_name" => $order->buyer_name,
+              "buyer_address" => $order->buyer_address,
+              "city" => $order->city,
+              "state" => $order->state,
+              "zip" => $order->zip,
+              "phone_day" => $order->phone_day,
+              "phone_evening" => $order->phone_evening,
+              "phone_cell" => $order->phone_cell,
+              "installation_site" => $order->installation_site,
+              "email" => $order->email,
+              "color_roof" => $order->color_roof,
+              "color_ends" => $order->color_ends,
+              "color_sides" => $order->color_sides,
+              "color_trim" => $order->color_trim,
+              "installation" => $order->installation,
+              "installation_other" => $order->installation_other,
+              "land_level" => $order->land_level,
+              "electricity" => $order->electricity,
+              "payment" => $order->payment,
+              "total_sale" => $order->total_sale,
+              "tax" => $order->tax,
+              "tax_exempt" => $order->tax_exempt,
+              "non_tax_contractor_fee" => $order->non_tax_contractor_fee,
+              "total" => $order->total,
+              "dealer_deposit" => $order->dealer_deposit,
+              "amount_paid" => $order->amount_paid,
+              "balance_due" => $order->balance_due,
+              "buyer_signature" => $order->buyer_signature,
+              "buyer_signature_date" => $order->buyer_signature_date->isoFormat('LL'),
+              "contractor_signature" => $order->contractor_signature,
+              "contractor_signature_date" => $order->contractor_signature_date->isoFormat('LL')
+          ],
+            'items' => $array_list
+        ];
+
+        $pdf = PDF::loadView('orders.pdf', ['data'=>$data])->setOptions(['defaultFont' => 'sans-serif']);
+        return $pdf->stream('invoice.pdf');
     }
 }
