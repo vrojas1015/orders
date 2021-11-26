@@ -10,6 +10,7 @@ use App\Http\Controllers\AppBaseController;
 use PDF;
 use Mpdf\Mpdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Facade\FlareClient\Http\Response;
@@ -284,557 +285,9 @@ class OrderController extends AppBaseController
             'items' => $array_list
         ];
 
-        /* $test ='
- <!DOCTYPE html>
- <html lang="en">
- <head>
-     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
-     <style>
-         .btn-danger{
-             background-color: red !important;
-             color: white !important;
-         }
-     </style>
 
- </head>
- <body>
- <div class="container-fluid">
-     <form method="POST" action="http://orders.test/pdf/5" accept-charset="UTF-8" id="form_order"><input name="_token" type="hidden" value="Hf19TOby9QYSzt4nHDQcc ▶
-     <div class="row">
-         <div class="col-lg-12">
-             <div class="card">
-                 <div class="card-body">
-                     <div class="row mb-5">
-                         <div class="col-4">
-                             <div class="row align-items-center">
-                                 <div class="col-sm-9 mt-5">
-                                     <div class="brand-logo mb-3">
-         http://orders.test}}
-                                         <img class="logo-abbr mr-2" src="C:\laragon\www\orders\public\images/logo.png" alt="">
-                                         <img class="logo-compact" src="./public/assets/images/logo-text.png" alt="">
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                         <div class="col-4">
-                             <div class="row align-items-center">
-                                 <div class="col-sm-9">
-                                         <span>Please send exact amount: <strong class="d-block">0.15050000 BTC</strong>
-                                                     <strong>1DonateWffyhwAjskoEwXt83pHZxhLTr8H</strong></span><br>
-                                     <small class="text-muted">Current exchange rate 1BTC = $6590 USD</small>
-                                 </div>
-                             </div>
-                         </div>
-
-                         <div class="col-4">
-                             <!-- User Id Field -->
-                             <input class="form-control" name="user_id" type="hidden" value="1">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text">Invoice</span>
-                                 </div>
-                                 <input class="form-control" disabled name="invoice" type="number" value="6">
-                             </div>
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text">Order Date</span>
-                                 </div>
-                                 <input name="order_date" class="datepicker-default form-control" id="order_date" value="November 6, 2021" disabled/>
-                             </div>
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text">Installed Date</span>
-                                 </div>
-                                 <input name="installed_date" class="datepicker-default form-control" id="installed_date" value="November 13, 2021" disabled/>
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-md-2">
-                             <span><strong>Status:</strong></span>
-                         </div>
-                         <div class="col-md-10">
-                             <div class="form-group">
-                                 <div class="form-check form-check-inline">
-                                     <label class="form-check-label" for="status_quote">
-                                                                                     <input type="radio" class="form-check-input" name="status" id="status_quote" ▶
-                                                                                 Quote
-                                                                                 </label>
-                                 </div>
-                                 <div class="form-check form-check-inline">
-                                     <label class="form-check-label" for="status_shop">
-                                                                                     <input type="radio" class="form-check-input" name="status" id="status_shop"  ▶
-                                                                                 In Shop
-         </label>
-                                 </div>
-                                 <div class="form-check form-check-inline">
-                                     <label class="form-check-label" for="status_installation">
-                                                                                     <input type="radio" class="form-check-input" name="status" id="status_instal ▶
-                                                                                 Installation
-                                     </label>
-                                 </div>
-                                 <div class="form-check form-check-inline">
-                                     <label class="form-check-label" for="status_installed">
-                                                                                     <input type="radio" class="form-check-input" name="status" id="status_instal ▶
-                                                                                 Installed
-                                                                                 </label>
-                                 </div>
-                                 <div class="form-check form-check-inline">
-                                     <label class="form-check-label" for="status_cancel">
-                                                                                     <input type="radio" class="form-check-input" name="status" id="status_instal ▶
-                                                                                 Cancel
-                                     </label>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-6">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Dealer:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="dealer" type="text" value="asd">
-                             </div>
-                         </div>
-                         <div class="col-3">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Country:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="dealer_country" type="text" value="asd">
-                             </div>
-                         </div>
-                         <div class="col-3">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Phone:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="dealer_phone" type="number" value="234">
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-12">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Buyer Name(s):</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="buyer_name" type="text" value="asd">
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-4">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Buyer Address:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="buyer_address" type="text" value="asd">
-                             </div>
-                         </div>
-                         <div class="col-4">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>City:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="city" type="text" value="asd">
-                             </div>
-                         </div>
-                         <div class="col-2">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>State:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="state" type="text" value="asd">
-                             </div>
-                         </div>
-                         <div class="col-2">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Zip:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="zip" type="text" value="1223">
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-4">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Phone(Day):</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="phone_day" type="number" value="23">
-                             </div>
-                         </div>
-                         <div class="col-4">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>(Evening):</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="phone_evening" type="number" value="23">
-                             </div>
-                         </div>
-                         <div class="col-4">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>(Cell):</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="phone_cell" type="number" value="23">
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-12">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Installation Site:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="installation_site" type="text" value="asd">
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-12">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text" style="font-size:medium;"><strong>Email Address:</strong></span>
-                                 </div>
-                                 <input class="form-control" disabled name="email" type="text" value="asd">
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="card-body">
-                             <button type="button" class="btn btn-square btn-success" data-toggle="modal" data-target="#exampleModalCenter">Create Item</button>\ ▶
-         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-8">
-                             <div class="table-responsive">
-                                 <table class="table table-striped" >
-                                     <thead>
-                                     <tr>
-                                         <th>Item</th>
-                                         <th>Description</th>
-                                         <th>Price</th>
-                                         <th>Amount</th>
-                                         <th>Total</th>
-                                     </tr>
-                                     </thead>
-                                     <tbody id="table_item">
-                                                                         </tbody>
-                                 </table>
-                             </div>
-                         </div>
-                         <div class="col-4">
-                             <div class="row">
-                                 <h4>ALL ORDERS C.O.D</h4>
-                                 <table class="table table-clear">
-                                     <tbody>
-                                     <tr>
-                                         <td class="left"><strong>Total Sale</strong></td>
-                                         <td class="right">
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>$</strong></span>
-                                                 </div>
-                                                 <input class="form-control" id="total_sale" readonly name="total_sale" type="number" value="1156.00">
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td class="left"><strong>Tax</strong></td>
-                                         <td class="right">
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>%</strong></span>
-                                                 </div>
-                                                 <input class="form-control" id="tax" onchange="calculaTotal()" disabled name="tax" type="number" value="34.00">\ ▶
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td class="left"><strong>Tax Exempt</strong></td>
-                                         <td class="right">
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>$</strong></span>
-                                                 </div>
-                                                 <input class="form-control" id="tax_exempt" disabled name="tax_exempt" type="number" value="43.00">
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td class="left"><strong>Non-Tax<br>
-         Contractor Fee</strong></td>
-                                         <td class="right">
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>$</strong></span>
-                                                 </div>
-                                                 <input class="form-control" id="contractor_fee" disabled name="non_tax_contractor_fee" type="text" value="43.00" ▶
-         </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td class="left"><strong>Total</strong> </td>
-                                         <td class="right">
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>$</strong></span>
-                                                 </div>
-                                                 <input name="total" class="form-control" id="total_order" readonly="true" type="number" value="1549.04">
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td class="left"><strong>Dealer Deposit</strong> </td>
-                                         <td class="right">
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>$</strong></span>
-                                                 </div>
-                                                 <input class="form-control" id="dealer_deposit" disabled name="dealer_deposit" type="number" value="34.00">
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td class="left"><strong>Amount Paid</strong> </td>
-                                         <td class="right">
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>$</strong></span>
-                                                 </div>
-                                                 <input class="form-control" id="amount_paid" disabled name="amount_paid" type="number" value="34.00">
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td class="left"><strong>Balance Due</strong> </td>
-                                         <td class="right">
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>$</strong></span>
-                                                 </div>
-                                                 <input class="form-control" id="balance_due" disabled name="balance_due" type="number" value="324.00">
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     </tbody>
-                                 </table>
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-6">
-                             <h5 class="card-title">Special Instructions</h5>
-                             <textarea class="form-control" rows="4" id="special_instruction" name="special_instruction" cols="50"></textarea>
-                             <br>
-                             <div class="table-responsive">
-                                 <table class="table table-bordered">
-                                     <tbody>
-                                     <tr>
-                                         <td rowspan="4"><strong>Colors</strong></td>
-                                         <td>
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>Roof:</strong></span>
-                                                 </div>
-                                                 <input class="form-control" disabled name="color_roof" type="text" value="sdf">
-                                             </div>
-                                         </td>
-                                         <td>
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>Sides:</strong></span>
-                                                 </div>
-                                                 <input class="form-control" disabled name="color_sides" type="text" value="wer">
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td>
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>Ends:</strong></span>
-                                                 </div>
-                                                 <input class="form-control" disabled name="color_ends" type="text" value="wer">
-                                             </div>
-                                         </td>
-                                         <td>
-                                             <div class="input-group input-group-sm mb-3">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><strong>Trim:</strong></span>
-                                                 </div>
-                                                 <input class="form-control" disabled name="color_trim" type="text" value="sdf">
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     </tbody>
-                                 </table>
-                             </div>
-                         </div>
-                         <div class="col-6">
-                             <div class="table-responsive">
-                                 <table class="table table-bordered">
-                                     <tbody>
-                                     <tr>
-                                         <td><strong>Installation</strong></td>
-                                         <td colspan="2">
-                                             <div class="form-group">
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_ground" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 Ground
-                                                                                                                 </label>
-                                                 </div>
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_cement" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 Cement
-                                                                                                                 </label>
-                                                 </div>
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_asphalt" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 Asphalt
-                                                                                                                 </label>
-                                                 </div>
-                                                 <div class="form-check form-check-inline">
-                                                     <div class="input-group input-group-sm mb-3">
-                                                         <label for="check_other" class="form-check-label" >
-                                                                                                                             <input type="radio" class="form-chec ▶
-                                                                                                                         Other
-                                                         </label>
-                                                         <input class="form-control" disabled name="installation_other" type="text">
-                                                     </div>
-                                                 </div>
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td><strong>Land Level</strong></td>
-                                         <td colspan="2">
-                                             <div class="form-group">
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_land_yes" class="form-check-label text-sm-left" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 Yes
-                                                     </label>
-                                                 </div>
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_land_no" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 No (Building will be installed "as is")
-                                                     </label>
-                                                 </div>
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     <tr>
-                                         <td><strong>Electricity</strong></td>
-                                         <td>
-                                             <div class="form-group">
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_electricity_yes" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 Yes
-                                                     </label>
-                                                 </div>
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_electricity_no" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 No
-                                                     </label>
-                                                 </div>
-                                             </div>
-                                         </td>
-                                         <td><span>Payment:</span>
-                                             <div class="form-group">
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_cash" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 Cash
-                                                     </label>
-                                                 </div>
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_cash" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 Check
-                                                     </label>
-                                                 </div>
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_cash" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 CC
-                                                     </label>
-                                                 </div>
-                                                 <div class="form-check form-check-inline">
-                                                     <label for="check_cash" class="form-check-label" >
-                                                                                                                     <input type="radio" class="form-check-input" ▶
-                                                                                                                 P.O.
-                                                     </label>
-                                                 </div>
-                                             </div>
-                                         </td>
-                                     </tr>
-                                     </tbody>
-                                 </table>
-                             </div>
-                         </div>
-                     </div>
-                     <div class="row">
-                         <div class="col-3">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text">Buyer:</span>
-                                 </div>
-                                 <input class="form-control" disabled name="buyer_signature" type="text" value="sdf">
-                             </div>
-                         </div>
-                         <div class="col-3">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text">Date:</span>
-                                 </div>
-                                 <input class="datepicker-default form-control" disabled name="buyer_signature_date" type="text" value="November 11, 2021">
-                             </div>
-                         </div>
-                         <div class="col-3">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text">Contractor Name:</span>
-                                 </div>
-                                 <input class="form-control" disabled name="contractor_signature" type="text" value="sdf">
-                             </div>
-                         </div>
-                         <div class="col-3">
-                             <div class="input-group input-group-sm mb-3">
-                                 <div class="input-group-prepend">
-                                     <span class="input-group-text">Date:</span>
-                                 </div>
-                                 <input class="datepicker-default form-control" disabled name="contractor_signature_date" type="text" value="November 12, 2021">\ ▶
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-                 <div class="card-footer">
-                     <button class="btn btn-primary" id="save" type="button">Imprimir</button>
-                     <a href="http://orders.test/orders" class="btn btn-default">Cancel</a>
-                 </div>
-             </div>
-         </div>
-     </div>
-     </form>
- </div>
- </body>
- </html>';
-        */
-
-        $imgUno = url('assets/images/logo.png');
-        $url = public_path() . "/assets/images/logo.png";
-        //dd($url)
+        $url = asset('storage/logos/Logo_JM.png');
+        //assets/logos/Logo_JM.png
         $test = "";
 
         $test =
@@ -892,20 +345,20 @@ background: #FFF;
 #invoice-mid{min-height: 120px;}
 #invoice-bot{ min-height: 250px;}
 
-.logo{
+/*.logo{
     margin-top: 80px;
     margin-left: 20px;
     margin-right: 10px;
     float: left;
     height: 120px;
 	width: 120px;
-	background: url(assets/images/logo.png) no-repeat;
-        background-size: 150px 150px;
-}
+	background: url('/storage/logos/Logo_JM.png') no-repeat;
+        background-size: 10%;
+}*/
 .clientlogo{
     height: 260px;
 	width: 260px;
-	background: url(assets/images/logo-text.png) no-repeat;
+	background: url(".$url. ") no-repeat;
         background-size: 166px 88px;
 }
 .info{
@@ -927,8 +380,13 @@ td{
   border: 1px solid #EEE
 }
 .tabletitle{
-  padding: 5px;
-  background: #EEE;
+  border-top: 0px;
+  border-right: 0px;
+  border-left: 0px;
+  border-bottom: 0px ;
+  color: #FFF;
+  padding: 130px;
+  background: #343434;
 }
 .tabletitle2{
   padding: 130px;
@@ -989,14 +447,12 @@ form{
   <div id='headerimage'></div>
   <div id='invoice' class='effect2'>
     <div id='invoice-top'>
-       <table class='tabletitle2'>
+       <table class='tabletitle'>
             <tr>
-                <td class='logo'></td>
-                <td class='info'>
-                    <p>Please send exact amount:</p>
-                    <p >Current exchange rate 1BTC </p>
+                <td class='logo' colspan='2' style='border-right: 0px'>
+                    <img style='width: 160px' src='" .$url."'>
                 </td>
-                <td>
+                <td style='border-left: 0px'>
                     <span>Invoice: </span>
                     <input type='number' value='$order->invoice'/>
                     <br>
@@ -1358,7 +814,7 @@ form{
         }elseif($accion=='descargar'){
             $mpdf->Output($namefile,"D");
         } */
-        return $mpdf->Output('invoice.pdf',"D");
+        return $mpdf->Output('invoice.pdf',"I");
     }
 
     public function test() {
