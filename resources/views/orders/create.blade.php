@@ -742,7 +742,8 @@
             method: "POST",
             url: "{{route('orders.store')}}",
             data: $('#form_order').serialize() + '&items=' + JSON.stringify(items),
-        }).success(function( response ) {
+            dataType: 'json'
+        }).done(function( response ) {
             window.location.href = "{{route('orders.index')}}";
         });
     });

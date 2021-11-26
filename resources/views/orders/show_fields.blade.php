@@ -240,11 +240,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="card-body">
-                                <button type="button" class="btn btn-square btn-success" data-toggle="modal" data-target="#exampleModalCenter">Create Item</button>
-                            </div>
-                        </div>
+
                         <div class="row">
                             <div class="col-8">
                                 <div class="table-responsive">

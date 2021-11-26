@@ -37,3 +37,4 @@ Route::resource('orders', App\Http\Controllers\OrderController::class);
 Route::resource('users', App\Http\Controllers\UserController::class);
 
 Route::get('/pdf/{id}', [App\Http\Controllers\OrderController::class, 'pdf'])->name('pdf');
+

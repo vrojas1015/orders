@@ -31,9 +31,9 @@
                             <div class="row align-items-center">
                                 <div class="col-sm-9 mt-5">
                                     <div class="brand-logo mb-3">
-                                        <img class="logo-abbr mr-2" src="./public/images/logo.png" alt="">
-                                        <img class="logo-compact" src="http://orders.test/assets/images/logo-text.png"
-                                             alt="">
+                                        {{env('APP_URL') }}}}
+                                        <img class="logo-abbr mr-2" src="{{ public_path('images/logo.png') }}" alt="">
+                                        <img class="logo-compact" src="./public/assets/images/logo-text.png" alt="">
                                     </div>
                                 </div>
                             </div>
