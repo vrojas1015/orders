@@ -141,10 +141,9 @@ class OrderController extends AppBaseController
 
         $order = $this->orderRepository->create($request->all());
         foreach ($items as $item) {
-            $arrayItem = ['order_id'=>2/*$order['id']*/, 'item'=>$item->item, 'description'=>$item->description, 'price'=>$item->price, 'amount'=>$item->amount, 'measure'=>$item->measure];
+            $arrayItem = ['order_id'=>$order->id/*$order['id']*/, 'item'=>$item->item, 'description'=>$item->description, 'price'=>$item->price, 'amount'=>$item->amount, 'measure'=>$item->measure];
             $row = $this->itemRepository->create($arrayItem);
         }
-
         Flash::success('Order saved successfully.');
         return response()->json([
             'msg' => 'Order saved successfully.',

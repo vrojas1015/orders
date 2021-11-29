@@ -742,10 +742,36 @@
             method: "POST",
             url: "{{route('orders.store')}}",
             data: $('#form_order').serialize() + '&items=' + JSON.stringify(items),
-            dataType: 'json'
-        }).done(function( response ) {
-            window.location.href = "{{route('orders.index')}}";
-        });
+            dataType: 'json',
+            error: function (request, error) {
+                console.log(request.responseJSON.errors);
+                if(request.status === 422){
+                    for (const i in request.responseJSON.errors) {
+                        for (const j in i) {
+                            Swal.fire(
+                                'Warning',
+                                request.responseJSON.errors[i][j],
+                                'warning'
+                            )
+                            return;
+                        }
+                    }
+                }else{
+                    Swal.fire(
+                        'Error',
+                        'Contact The Supplier',
+                        'error'
+                    )
+                }
+
+            },
+            success: function () {
+                window.location.href = "{{route('orders.index')}}";
+            }
+        })
+        /*done(function( response ) {
+
+        });*/
     });
 //CLEAR MODAL
 $('#exampleModalCenter').on('show.bs.modal', function (event) {
