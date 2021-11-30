@@ -8,7 +8,9 @@ use App\Repositories\WebConfigRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Alert;
 use Response;
+
 
 class WebConfigController extends AppBaseController
 {
@@ -52,13 +54,33 @@ class WebConfigController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateWebConfigRequest $request)
+    public function store(Request $request)
     {
-        $input = $request->all();
+
+
+        $name = $request->file('img')->hashName();
+        $extension = $request->file('img')->extension();
+        $request->merge(['logo' => 'storage/logos/'.$request->user()->id.'/'.$name]);
+        //dd($extension);
+        if ($extension == 'jpeg' || $extension =='jpg' || $extension =='png') {
+
+            $input = $request->validate([
+                'address' => 'required|string|max:255',
+                'logo' => 'required|string|max:255',
+            ]);
+            $path = $request->file('img')->storeAs(
+                'public/logos/'.$request->user()->id, $name
+            );
+            /*dd(asset('storage/logos/Logo_JM.png'));
+            asset('storage/file.txt');*/
+        }else{
+            Alert::error('Error', 'You must choose a .jpg, png, jpeg format');
+            return view('web_configs.create');
+        }
 
         $webConfig = $this->webConfigRepository->create($input);
 
-        Flash::success('Web Config saved successfully.');
+        Alert::success('Success');
 
         return redirect(route('webConfigs.index'));
     }

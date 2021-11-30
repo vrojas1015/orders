@@ -10,11 +10,11 @@
     </a>
 </li>
 
-<li><a class="has-arrow ai-icon" href="{{route('items.index')}}" aria-expanded="false">
+<!-- <li><a class="has-arrow ai-icon" href="{{route('items.index')}}" aria-expanded="false">
         <i class="flaticon-381-user-2"></i>
         <span class="nav-text">items</span>
     </a>
-</li>
+</li> -->
 
 <li><a class="has-arrow ai-icon" href="{{route('orders.index')}}" aria-expanded="false">
         <i class="flaticon-381-file-1"></i>
@@ -22,11 +22,11 @@
     </a>
 </li>
 
-<li><a class="has-arrow ai-icon" href="{{route('specialInstructions.index')}}" aria-expanded="false">
+<!-- <li><a class="has-arrow ai-icon" href="{{route('specialInstructions.index')}}" aria-expanded="false">
         <i class="flaticon-381-newspaper"></i>
         <span class="nav-text">Special Instructions</span>
     </a>
-</li>
+</li> -->
 
 <li><a class="has-arrow ai-icon" href="{{route('webConfigs.index')}}" aria-expanded="false">
         <i class="flaticon-381-list-1"></i>

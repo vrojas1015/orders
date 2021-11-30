@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Repositories\OrderRepository;
 use App\Repositories\ItemRepository;
 use App\Http\Controllers\AppBaseController;
+use App\Repositories\WebConfigRepository;
 use PDF;
 use Mpdf\Mpdf;
 use Carbon\Carbon;
@@ -20,25 +21,28 @@ class OrderController extends AppBaseController
     /** @var  OrderRepository */
     private $orderRepository;
     private $itemRepository;
+    private $webRepository;
 
-    public function __construct(OrderRepository $orderRepo, ItemRepository  $itemRepository)
+    public function __construct(OrderRepository $orderRepo, ItemRepository  $itemRepository, WebConfigRepository $webConfigRepository )
     {
         $this->orderRepository = $orderRepo;
         $this->itemRepository = $itemRepository;
+        $this->webConfigRepository = $webConfigRepository;
     }
 
     public function index(Request $request)
     {
         $orders = $this->orderRepository->all();
 
-        return view('orders.index')
-            ->with('orders', $orders);
+        return view('orders.index')->with('orders', $orders);
     }
 
 
     public function create()
     {
-        return view('orders.create');
+        $logos = $this->webConfigRepository->all();
+
+        return view('orders.create')->with('logos', $logos);
     }
 
 
@@ -157,6 +161,7 @@ class OrderController extends AppBaseController
     {
         $order = $this->orderRepository->find($id);
         $items = $this->itemRepository->detalle($order['id']);
+        $logos = $this->webConfigRepository->all();
 
         if (empty($order)) {
             Flash::error('Order not found');
@@ -164,7 +169,7 @@ class OrderController extends AppBaseController
             return redirect(route('orders.index'));
         }
 
-        return view('orders.show')->with(['order'=>$order, 'items'=>$items]);
+        return view('orders.show')->with(['order'=>$order, 'items'=>$items, 'logos'=>$logos]);
     }
 
 
@@ -219,6 +224,7 @@ class OrderController extends AppBaseController
     {
         $order = $this->orderRepository->find($id);
         $items = $this->itemRepository->detalle($order['id']);
+        $logos = $this->webConfigRepository->all();
 
         if (empty($order)) {
             Flash::error('Order not found');
@@ -284,8 +290,11 @@ class OrderController extends AppBaseController
             'items' => $array_list
         ];
 
+        foreach ($logos as $logo) {
+            $url = asset($logo->logo);
+            $address = $logo->address;
+        }
 
-        $url = asset('storage/logos/Logo_JM.png');
         //assets/logos/Logo_JM.png
         $test = "";
 
@@ -449,8 +458,9 @@ form{
        <table class='tabletitle'>
             <tr>
                 <td class='logo' colspan='2' style='border-right: 0px'>
-                    <img style='width: 160px' src='" .$url."'>
+                   <img style='width: 160px' src='".$url."'>
                 </td>
+                <td class='logo' style='border-right: 0px;border-left: 0px'><strong>".$address."</strong></td>
                 <td style='border-left: 0px'>
                     <span>Invoice: </span>
                     <input type='number' value='$order->invoice'/>

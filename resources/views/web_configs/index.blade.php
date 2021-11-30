@@ -8,10 +8,13 @@
                     <h1>Web Configs</h1>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-primary float-right"
-                       href="{{ route('webConfigs.create') }}">
-                        Add New
-                    </a>
+                    @if (count($webConfigs)<=0)
+                        <a class="btn btn-primary float-right"
+                           href="{{ route('webConfigs.create') }}">
+                            Add New
+                        </a>
+                    @endif
+
                 </div>
             </div>
         </div>
@@ -29,7 +32,7 @@
 
                 <div class="card-footer clearfix">
                     <div class="float-right">
-                        
+
                     </div>
                 </div>
             </div>

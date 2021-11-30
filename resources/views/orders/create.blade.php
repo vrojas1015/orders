@@ -24,10 +24,9 @@
                                 <div class="row align-items-center">
                                     <div class="col-sm-9 mt-5">
                                         <div class="brand-logo mb-3">
-                                            <img class="logo-abbr mr-2" src="{{asset('assets/images/logo.png')}}"
-                                                 alt="">
-                                            <img class="logo-compact" src="{{asset('assets/images/logo-text.png')}}"
-                                                 alt="">
+                                            @foreach($logos as $logo)
+                                            <img class="logo-abbr mr-2" style="width: 80%;vertical-align: middle" src="{{asset($logo->logo)}}"alt="">
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -35,9 +34,8 @@
                             <div class="col-4">
                                 <div class="row align-items-center">
                                     <div class="col-sm-9">
-                                        <span>Please send exact amount: <strong class="d-block">0.15050000 BTC</strong>
-                                                    <strong>1DonateWffyhwAjskoEwXt83pHZxhLTr8H</strong></span><br>
-                                        <small class="text-muted">Current exchange rate 1BTC = $6590 USD</small>
+                                        <span><strong>{{$logo->address}}</strong></span><br>
+
                                     </div>
                                 </div>
                             </div>

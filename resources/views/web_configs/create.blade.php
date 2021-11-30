@@ -12,17 +12,18 @@
     </section>
 
     <div class="content px-3">
-
+        @include('sweetalert::alert')
         @include('adminlte-templates::common.errors')
 
         <div class="card">
 
-            {!! Form::open(['route' => 'webConfigs.store']) !!}
+            {!! Form::open(['route' => 'webConfigs.store', 'files'=>'true']) !!}
 
             <div class="card-body">
 
                 <div class="row">
                     @include('web_configs.fields')
+
                 </div>
 
             </div>
@@ -35,5 +36,6 @@
             {!! Form::close() !!}
 
         </div>
+
     </div>
 @endsection
