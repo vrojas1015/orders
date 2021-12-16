@@ -5,7 +5,7 @@
             <span class="input-group-text"><strong>Logo</strong></span>
         </div>
         <div class="custom-file">
-            {!! Form::file('img', ['class'=>'custom-file-input']) !!}
+            {!! Form::file('img', ['class'=>'custom-file-input', 'required'=>'required']) !!}
             <label class="custom-file-label">Choose file</label>
         </div>
     </div>

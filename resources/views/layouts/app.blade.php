@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
+    <meta http-equiv="content-language" content="es">
     <meta charset="utf-8">
+    <meta locale="es" native="Espanol">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>{{ config('app.name') }}</title>
